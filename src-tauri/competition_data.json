@@ -1,0 +1,21 @@
+{
+  "name": "Test",
+  "competitors": [
+    {
+      "id": "dfae447b-c4d3-4575-a1ba-df1a8580c6f1",
+      "name": "Elias",
+      "pole_vault_attempts": [
+        {
+          "height": 2.0,
+          "successful": true
+        },
+        {
+          "height": 2.0,
+          "successful": true
+        }
+      ],
+      "sprint_time": null,
+      "seilsprung_count": null
+    }
+  ]
+}

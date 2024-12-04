@@ -33,18 +33,44 @@ export default function CompetitionsPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [newCompetitorName, setNewCompetitorName] = useState('');
   const [competitorDialogOpen, setCompetitorDialogOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
   const router = useRouter();
 
   useEffect(() => {
-    loadCompetitions();
+    loadData();
   }, []);
+
+  async function loadData() {
+    try {
+      await invoke('load_data');
+      await loadCompetitions();
+    } catch (error) {
+      console.error('Failed to load data:', error);
+    }
+  }
+
+  async function saveData() {
+    try {
+      await invoke('save_data');
+    } catch (error) {
+      console.error('Failed to save data:', error);
+    }
+  }
 
   async function loadCompetitions() {
     try {
+      setIsLoading(true);
       const data = await invoke('get_competition_data');
       setCompetitions([data]);
+      if (selectedCompetition) {
+        const updatedSelectedCompetition = data.competitors ? data : null;
+        setSelectedCompetition(updatedSelectedCompetition);
+      }
     } catch (error) {
       console.error('Failed to load competitions:', error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -52,12 +78,17 @@ export default function CompetitionsPage() {
     if (!newCompetitionName.trim()) return;
 
     try {
-      await invoke('create_new_competition', { name: newCompetitionName });
+      setIsLoading(true);
+      await invoke('create_new_competition', { 
+        name: newCompetitionName 
+      });
       await loadCompetitions();
       setNewCompetitionName('');
       setDialogOpen(false);
     } catch (error) {
       console.error('Failed to create competition:', error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -65,12 +96,17 @@ export default function CompetitionsPage() {
     if (!newCompetitorName.trim()) return;
 
     try {
-      await invoke('add_competitor', { name: newCompetitorName });
+      setIsLoading(true);
+      await invoke('add_competitor', { 
+        name: newCompetitorName
+      });
       await loadCompetitions();
       setNewCompetitorName('');
       setCompetitorDialogOpen(false);
     } catch (error) {
       console.error('Failed to add competitor:', error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
