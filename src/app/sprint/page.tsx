@@ -10,21 +10,22 @@ import { toast } from "react-hot-toast";
 interface Competitor {
   id: string;
   name: string;
-  climbing_time: number | null;
+  sprint_time: number | null;
 }
 
-interface ActiveClimber {
+interface ActiveSprinter {
   id: string;
   name: string;
   time: number;
 }
 
-export default function ClimbingPage() {
+export default function SprintPage() {
   const [competitors, setCompetitors] = useState<Competitor[]>([]);
-  const [selectedClimbers, setSelectedClimbers] = useState<string[]>([]);
-  const [activeClimbers, setActiveClimbers] = useState<ActiveClimber[]>([]);
+  const [selectedSprinters, setSelectedSprinters] = useState<string[]>([]);
+  const [activeSprinters, setActiveSprinters] = useState<ActiveSprinter[]>([]);
   const [isRunning, setIsRunning] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+
   const [isLoading, setIsLoading] = useState(false);
   const [startTime, setStartTime] = useState<number | null>(null);
 
@@ -47,16 +48,16 @@ export default function ClimbingPage() {
   async function handleSaveAll() {
     try {
       setIsLoading(true);
-      for (const climber of activeClimbers) {
-        await invoke('set_climbing_time', {
-          competitorId: climber.id,
-          time: climber.time
+      for (const sprinter of activeSprinters) {
+        await invoke('set_sprint_time', {
+          competitorId: sprinter.id,
+          time: sprinter.time
         });
       }
       await invoke('save_data');
       setRefreshKey(prev => prev + 1);
-      setActiveClimbers([]);
-      setSelectedClimbers([]);
+      setActiveSprinters([]);
+      setSelectedSprinters([]);
       setIsRunning(false);
       toast.success('All times saved successfully');
     } catch (error) {
@@ -68,7 +69,7 @@ export default function ClimbingPage() {
   }
 
   function toggleCompetitor(id: string) {
-    setSelectedClimbers(prev => 
+    setSelectedSprinters(prev => 
       prev.includes(id) 
         ? prev.filter(c => c !== id)
         : [...prev, id]
@@ -76,8 +77,8 @@ export default function ClimbingPage() {
   }
 
   useEffect(() => {
-    setActiveClimbers(
-      selectedClimbers.map(id => {
+    setActiveSprinters(
+      selectedSprinters.map(id => {
         const competitor = competitors.find(c => c.id === id)!;
         return {
           id: competitor.id,
@@ -86,12 +87,12 @@ export default function ClimbingPage() {
         };
       })
     );
-  }, [selectedClimbers, competitors]);
+  }, [selectedSprinters, competitors]);
 
   function updateTime(id: string, time: number) {
-    setActiveClimbers(prev => 
-      prev.map(climber => 
-        climber.id === id ? { ...climber, time } : climber
+    setActiveSprinters(prev => 
+      prev.map(sprinter => 
+        sprinter.id === id ? { ...sprinter, time } : sprinter
       )
     );
   }
@@ -106,9 +107,9 @@ export default function ClimbingPage() {
     const endTime = Date.now();
     const elapsedTime = (endTime - startTime) / 1000; // Convert to seconds
     
-    setActiveClimbers(prev => 
-      prev.map(climber => ({
-        ...climber,
+    setActiveSprinters(prev => 
+      prev.map(sprinter => ({
+        ...sprinter,
         time: Number(elapsedTime.toFixed(2))
       }))
     );
@@ -134,7 +135,7 @@ export default function ClimbingPage() {
     <div className="p-8 max-w-7xl mx-auto bg-gray-50 min-h-screen">
       <div className="flex justify-between items-center mb-8 bg-white p-6 rounded-lg shadow-sm">
         <div className="flex items-center gap-4">
-          <h1 className="text-3xl font-bold text-gray-800">Climbing Competition 🧗</h1>
+          <h1 className="text-3xl font-bold text-gray-800">Sprint Competition</h1>
           <Button
             variant="outline"
             onClick={openLeaderboard}
@@ -147,7 +148,7 @@ export default function ClimbingPage() {
           <Button
             variant="default"
             onClick={startTimer}
-            disabled={selectedClimbers.length === 0 || isRunning}
+            disabled={selectedSprinters.length === 0 || isRunning}
             className="bg-green-600 hover:bg-green-700"
           >
             Start Timer
@@ -163,28 +164,28 @@ export default function ClimbingPage() {
         </div>
       </div>
 
-      {/* Active Climbers Section */}
-      {activeClimbers.length > 0 && (
+      {/* Active Sprinters Section */}
+      {activeSprinters.length > 0 && (
         <div className="mb-8 bg-white p-6 rounded-lg shadow-sm">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-gray-800">Active Climbers</h2>
+            <h2 className="text-xl font-semibold text-gray-800">Active Sprinters</h2>
             <Button
               onClick={handleSaveAll}
-              disabled={!activeClimbers.length || isRunning}
+              disabled={!activeSprinters.length || isRunning}
               className="bg-blue-600 hover:bg-blue-700"
             >
               Save All Results
             </Button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {activeClimbers.map((climber) => (
+            {activeSprinters.map((sprinter) => (
               <div 
-                key={climber.id}
+                key={sprinter.id}
                 className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border-2 border-gray-200"
               >
                 <div className="flex items-center gap-4">
                   <div className={`h-3 w-3 rounded-full ${isRunning ? 'bg-green-500' : 'bg-gray-500'}`}></div>
-                  <span className="font-semibold text-lg">{climber.name}</span>
+                  <span className="font-semibold text-lg">{sprinter.name}</span>
                 </div>
                 <div className="text-2xl font-bold text-blue-600">
                   {isRunning && startTime ? (
@@ -192,8 +193,8 @@ export default function ClimbingPage() {
                   ) : (
                     <Input
                       type="number"
-                      value={climber.time}
-                      onChange={(e) => updateTime(climber.id, parseFloat(e.target.value) || 0)}
+                      value={sprinter.time}
+                      onChange={(e) => updateTime(sprinter.id, parseFloat(e.target.value) || 0)}
                       className="w-24 text-lg font-medium"
                       step="0.01"
                       min="0"
@@ -208,7 +209,7 @@ export default function ClimbingPage() {
         </div>
       )}
 
-      {/* Competitors Table */}
+      {/* Existing competitors table */}
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <Table>
           <TableHeader>
@@ -220,7 +221,7 @@ export default function ClimbingPage() {
           </TableHeader>
           <TableBody>
             {competitors.map((competitor) => {
-              const isSelected = selectedClimbers.includes(competitor.id);
+              const isSelected = selectedSprinters.includes(competitor.id);
 
               return (
                 <TableRow key={competitor.id} className="hover:bg-gray-50 transition-colors">
@@ -228,13 +229,13 @@ export default function ClimbingPage() {
                   <TableCell>
                     {isSelected && isRunning ? (
                       <span className="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800">
-                        Currently Climbing
+                        Currently Running
                       </span>
                     ) : isSelected ? (
                       <span className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-800">
                         Selected
                       </span>
-                    ) : competitor.climbing_time !== null ? (
+                    ) : competitor.sprint_time !== null ? (
                       <span className="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-gray-800">
                         Completed
                       </span>
@@ -245,7 +246,7 @@ export default function ClimbingPage() {
                     )}
                   </TableCell>
                   <TableCell>
-                    {!isRunning && competitor.climbing_time === null && (
+                    {!isRunning && competitor.sprint_time === null && (
                       <Button
                         variant="outline"
                         onClick={() => toggleCompetitor(competitor.id)}
@@ -271,4 +272,4 @@ export default function ClimbingPage() {
       )}
     </div>
   );
-}
+} 

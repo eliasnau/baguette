@@ -44,8 +44,8 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             command::add_competitor,
             command::add_stabhochsprung_attempt,
+            command::set_climbing_time,
             command::set_sprint_time,
-            command::set_seilsprung_count,
             command::save_data,
             command::load_data,
             command::get_competition_data,
@@ -54,3 +54,4 @@ pub fn run() {
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
+

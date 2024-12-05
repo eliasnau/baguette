@@ -158,6 +158,12 @@ export default function CompetitionsPage() {
               >
                 Go to Climbing
               </Button>
+              <Button 
+                variant="secondary"
+                onClick={() => router.push('/sprint')}
+              >
+                Go to Sprint
+              </Button>
             </div>
           </div>
 

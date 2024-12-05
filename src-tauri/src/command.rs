@@ -73,21 +73,29 @@ pub async fn add_stabhochsprung_attempt(
 #[tauri::command]
 pub async fn set_sprint_time(
     state: State<'_, AppState>,
-    competitor_id: u32,
-    time: f32,
+    app_handle: AppHandle,
+    competitor_id: String,
+    time: f64,
 ) -> Result<(), String> {
-    let mut storage = state.storage.lock().unwrap();
-    storage.set_sprint_time(competitor_id.to_string(), time as f64)
+    {
+        let mut storage = state.storage.lock().unwrap();
+        storage.set_sprint_time(competitor_id, time)?;
+    }
+
+    // Save the data after setting the time
+    save_data(state, app_handle).await?;
+
+    Ok(())
 }
 
 #[tauri::command]
-pub async fn set_seilsprung_count(
+pub async fn set_climbing_time(
     state: State<'_, AppState>,
     competitor_id: String,
-    count: u32,
+    time: f64,
 ) -> Result<(), String> {
     let mut storage = state.storage.lock().unwrap();
-    storage.set_seilsprung_count(competitor_id, count as i32);
+    storage.set_climbing_time(competitor_id, time)?;
     Ok(())
 }
 

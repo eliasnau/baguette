@@ -14,7 +14,7 @@ pub struct Competitor {
     pub name: String,
     pub pole_vault_attempts: Option<Vec<PoleVaultAttempt>>,
     pub sprint_time: Option<f64>,
-    pub seilsprung_count: Option<i32>,
+    pub climbing_time: Option<f64>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -58,7 +58,7 @@ impl Storage {
             name: name.to_string(),
             pole_vault_attempts: None,
             sprint_time: None,
-            seilsprung_count: None,
+            climbing_time: None,
         });
     }
 
@@ -76,10 +76,10 @@ impl Storage {
         }
     }
 
-    pub fn set_seilsprung_count(
+    pub fn set_climbing_time(
         &mut self,
         competitor_id: String,
-        count: i32,
+        time: f64,
     ) -> Result<(), String> {
         if let Some(competitor) = self
             .competition
@@ -87,7 +87,7 @@ impl Storage {
             .iter_mut()
             .find(|c| c.id == competitor_id)
         {
-            competitor.seilsprung_count = Some(count);
+            competitor.climbing_time = Some(time);
             Ok(())
         } else {
             Err("Competitor not found".to_string())
@@ -111,6 +111,7 @@ impl Storage {
             .map_err(|e| format!("Failed to parse competition data: {}", e))?;
 
         Ok(Self { competition })
+
     }
 
     pub fn add_pole_vault_attempt(
