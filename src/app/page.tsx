@@ -113,7 +113,7 @@ export default function CompetitionsPage() {
           </SelectTrigger>
           <SelectContent>
             {competitions.map((competition, index) => (
-              <SelectItem key={index} value={competition.name}>
+              <SelectItem key={index} value={competition.name || `competition-${index}`}>
                 {competition.name}
               </SelectItem>
             ))}
@@ -150,6 +150,13 @@ export default function CompetitionsPage() {
                 onClick={() => router.push('/pole')}
               >
                 Go to Pole Vault
+              </Button>
+
+              <Button 
+                variant="secondary"
+                onClick={() => router.push('/climbing')}
+              >
+                Go to Climbing
               </Button>
             </div>
           </div>

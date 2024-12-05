@@ -5,6 +5,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useRouter } from 'next/navigation';
+import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
+import toast from 'react-hot-toast';
 
 interface Competitor {
   id: string;
@@ -110,15 +113,6 @@ export default function PolePage() {
   function canAttemptHeight(attempts: PoleVaultAttempt[] | null, height: number): boolean {
     if (!attempts) return true;
     
-    // Get highest successful height
-    const successfulHeights = attempts
-      .filter(a => a.successful)
-      .map(a => a.height);
-    const highestSuccess = Math.max(...successfulHeights, 0);
-
-    // Can't attempt heights lower than or equal to highest cleared height
-    if (height <= highestSuccess) return false;
-    
     // Get attempts grouped by height
     const attemptsByHeight = attempts.reduce((acc: { [height: number]: PoleVaultAttempt[] }, attempt) => {
       if (!acc[attempt.height]) {
@@ -128,32 +122,54 @@ export default function PolePage() {
       return acc;
     }, {});
 
-    // Check if they've failed three times at any height
-    for (const [attemptHeight, heightAttempts] of Object.entries(attemptsByHeight)) {
-      const numFailures = heightAttempts.filter(a => !a.successful).length;
-      if (numFailures >= 3 && !heightAttempts.some(a => a.successful)) {
-        // If they've failed three times at a height without succeeding,
-        // they can't attempt any higher heights
+    // Check each height
+    for (const attemptHeight in attemptsByHeight) {
+      const heightAttempts = attemptsByHeight[parseFloat(attemptHeight)];
+      
+      // If they've succeeded at this height, they can't attempt it again
+      if (parseFloat(attemptHeight) === height && heightAttempts.some(a => a.successful)) {
+        return false;
+      }
+      
+      // If they've failed 3 times at this height without success
+      const failedAttempts = heightAttempts.filter(a => !a.successful).length;
+      if (failedAttempts >= 3 && !heightAttempts.some(a => a.successful)) {
+        // Can't attempt this height or any higher heights
         if (height >= parseFloat(attemptHeight)) {
           return false;
         }
       }
     }
     
-    // Can't attempt if:
-    // 1. Already succeeded at this height (redundant now but keeping for clarity)
-    // 2. Failed three times at this height
-    const attemptsAtHeight = attempts.filter(a => a.height === height);
-    if (attemptsAtHeight.some(a => a.successful)) return false;
-    if (attemptsAtHeight.length >= 3 && !attemptsAtHeight.some(a => a.successful)) return false;
-    
     return true;
+  }
+
+  function openLeaderboard() {
+    const webview = new WebviewWindow('leaderboard', {
+      url: 'leaderboard'
+    });
+    webview.once('tauri://created', function () {
+      toast.success('Leaderboard opened');
+    });
+    webview.once('tauri://error', function (e) {
+      toast.error(`Error opening leaderboard`);
+      console.error(e);
+     });
   }
 
   return (
     <div className="p-8 max-w-7xl mx-auto bg-gray-50 min-h-screen">
       <div className="flex justify-between items-center mb-8 bg-white p-6 rounded-lg shadow-sm">
-        <h1 className="text-3xl font-bold text-gray-800">Pole Vault Competition</h1>
+        <div className="flex items-center gap-4">
+          <h1 className="text-3xl font-bold text-gray-800">Pole Vault Competition</h1>
+          <Button
+            variant="outline"
+            onClick={openLeaderboard}
+            className="ml-4 bg-blue-50 hover:bg-blue-100 text-blue-600"
+          >
+            View Leaderboard 🏆
+          </Button>
+        </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <span className="text-gray-600">Current Height:</span>
@@ -179,11 +195,11 @@ export default function PolePage() {
                 Current Jumper: {currentJumper.name}
               </h3>
               <p className="text-blue-700 mt-1">Attempting: {currentHeight}m</p>
-              <p className="text-blue-600 mt-1">
+              <div className="text-blue-600 mt-1">
                 Attempts at current height: {
                   getAttemptSequence(currentJumper.pole_vault_attempts, currentHeight)
                 }
-              </p>
+              </div>
             </div>
             <div className="flex gap-3">
               <Button
