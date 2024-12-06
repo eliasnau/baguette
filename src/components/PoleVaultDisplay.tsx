@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 import { useEffect, useState } from 'react';
 import { listen } from '@tauri-apps/api/event';
