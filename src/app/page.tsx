@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from 'next/navigation';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface Competition {
   name: string;
@@ -16,9 +17,13 @@ interface Competition {
 interface Competitor {
   id: string;
   name: string;
-  pole_vault_attempts: PoleVaultAttempt[] | null;
-  sprint_time: number | null;
-  seilsprung_count: number | null;
+  type: 'Stab' | 'Wurf';
+  // Stab disciplines
+  pole_vault_attempts?: PoleVaultAttempt[] | null;
+  climbing_time?: number | null;
+  // Wurf disciplines
+  sprint_5jump?: number | null;
+  kugel_distance?: number | null;
 }
 
 interface PoleVaultAttempt {
@@ -32,7 +37,9 @@ export default function CompetitionsPage() {
   const [newCompetitionName, setNewCompetitionName] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [newCompetitorName, setNewCompetitorName] = useState('');
+  const [newCompetitorType, setNewCompetitorType] = useState<'Stab' | 'Wurf'>('Stab');
   const [competitorDialogOpen, setCompetitorDialogOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<'Stab' | 'Wurf'>('Stab');
   const router = useRouter();
 
   useEffect(() => {
@@ -53,9 +60,9 @@ export default function CompetitionsPage() {
 
     try {
       await invoke('create_new_competition', { name: newCompetitionName });
-      await loadCompetitions();
       setNewCompetitionName('');
       setDialogOpen(false);
+      await loadCompetitions();
     } catch (error) {
       console.error('Failed to create competition:', error);
     }
@@ -65,7 +72,10 @@ export default function CompetitionsPage() {
     if (!newCompetitorName.trim()) return;
 
     try {
-      await invoke('add_competitor', { name: newCompetitorName });
+      await invoke('add_competitor', {
+        name: newCompetitorName,
+        competitionType: newCompetitorType
+      });
       await loadCompetitions();
       setNewCompetitorName('');
       setCompetitorDialogOpen(false);
@@ -74,15 +84,18 @@ export default function CompetitionsPage() {
     }
   }
 
+  function getCompetitorsByType(type: 'Stab' | 'Wurf') {
+    return selectedCompetition?.competitors.filter(c => c.competition_type === type) || [];
+  }
+
   return (
     <div className="p-8 max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold">Competition Management</h1>
         
-        {/* Create Competition Dialog */}
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button>Create Competition</Button>
+            <Button>Create Competition</Button> 
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
@@ -100,7 +113,6 @@ export default function CompetitionsPage() {
         </Dialog>
       </div>
 
-      {/* Competition Select */}
       <div className="mb-8">
         <Select
           onValueChange={(value) => {
@@ -140,67 +152,95 @@ export default function CompetitionsPage() {
                       onChange={(e) => setNewCompetitorName(e.target.value)}
                       placeholder="Competitor Name"
                     />
+                    <Select
+                      value={newCompetitorType}
+                      onValueChange={(value: 'Stab' | 'Wurf') => setNewCompetitorType(value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select competition type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Stab">Stab Competition</SelectItem>
+                        <SelectItem value="Wurf">Wurf Competition</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <Button onClick={addCompetitor}>Add</Button>
                   </div>
                 </DialogContent>
               </Dialog>
               
-              <Button 
-                variant="secondary"
-                onClick={() => router.push('/pole')}
-              >
+              {/* All navigation buttons */}
+              <Button variant="secondary" onClick={() => router.push('/pole')}>
                 Go to Pole Vault
               </Button>
-
-              <Button 
-                variant="secondary"
-                onClick={() => router.push('/climbing')}
-              >
+              <Button variant="secondary" onClick={() => router.push('/climbing')}>
                 Go to Climbing
               </Button>
-              <Button 
-                variant="secondary"
-                onClick={() => router.push('/sprint')}
-              >
-                Go to Sprint
+              <Button variant="secondary" onClick={() => router.push('/sprint')}>
+                Go to Stab Sprint
+              </Button>
+              <Button variant="secondary" onClick={() => router.push('/wsprint')}>
+                Go to Wurf Sprint
+              </Button>
+              <Button variant="secondary" onClick={() => router.push('/jump')}>
+                Go to 5-Jump
+              </Button>
+              <Button variant="secondary" onClick={() => router.push('/kugel')}>
+                Go to Kugel
               </Button>
             </div>
           </div>
 
-          {/* Competitors Table */}
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Sprint Time</TableHead>
-                  <TableHead>Seilsprung Count</TableHead>
-                  <TableHead>Pole Vault Attempts</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {selectedCompetition.competitors.map((competitor) => (
-                  <TableRow key={competitor.id}>
-                    <TableCell>{competitor.name}</TableCell>
-                    <TableCell>{competitor.sprint_time ?? '-'}</TableCell>
-                    <TableCell>{competitor.seilsprung_count ?? '-'}</TableCell>
-                    <TableCell>
-                      {competitor.pole_vault_attempts?.length ?? 0} attempts
-                    </TableCell>
-                  </TableRow>
-                ))}
-                {selectedCompetition.competitors.length === 0 && (
+          <Tabs value={activeTab} onValueChange={(value: 'Stab' | 'Wurf') => setActiveTab(value)}>
+            <TabsList className="mb-4">
+              <TabsTrigger value="Stab">Stab Competition</TabsTrigger>
+              <TabsTrigger value="Wurf">Wurf Competition</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="Stab">
+              <Table>
+                <TableHeader>
                   <TableRow>
-                    <TableCell colSpan={4} className="text-center">
-                      No competitors found
-                    </TableCell>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Pole Vault Attempts</TableHead>
+                    <TableHead>Climbing Time</TableHead>
                   </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
+                </TableHeader>
+                <TableBody>
+                  {getCompetitorsByType('Stab').map((competitor) => (
+                    <TableRow key={competitor.id}>
+                      <TableCell>{competitor.name}</TableCell>
+                      <TableCell>{competitor.pole_vault_attempts?.length ?? 0} attempts</TableCell>
+                      <TableCell>{competitor.climbing_time ?? '-'}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TabsContent>
+
+            <TabsContent value="Wurf">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>5-Jump Distance</TableHead>
+                    <TableHead>Kugel Distance</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {getCompetitorsByType('Wurf').map((competitor) => (
+                    <TableRow key={competitor.id}>
+                      <TableCell>{competitor.name}</TableCell>
+                      <TableCell>{competitor.sprint_5jump ? `${competitor.sprint_5jump}m` : '-'}</TableCell>
+                      <TableCell>{competitor.kugel_distance ? `${competitor.kugel_distance}m` : '-'}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TabsContent>
+          </Tabs>
         </div>
       )}
     </div>
   );
-} 
+}

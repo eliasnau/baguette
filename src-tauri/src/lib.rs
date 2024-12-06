@@ -5,6 +5,7 @@ use command::AppState;
 use std::sync::Mutex;
 use storage::Storage;
 use tauri::{Manager, State};
+use tauri::generate_handler;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -39,17 +40,21 @@ pub fn run() {
             Ok(())
         })
         .manage(AppState {
-            storage: Default::default(),
+            storage: Mutex::new(Storage::default()),
         })
-        .invoke_handler(tauri::generate_handler![
+        .invoke_handler(generate_handler![
             command::add_competitor,
             command::add_stabhochsprung_attempt,
             command::set_climbing_time,
             command::set_sprint_time,
+            command::add_jump_attempt,
+            command::set_kugel_distance,
             command::save_data,
             command::load_data,
             command::get_competition_data,
-            command::create_new_competition
+            command::create_new_competition,
+            command::set_wsprint_time,
+            command::add_kugel_attempt,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

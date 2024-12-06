@@ -3,9 +3,17 @@ import { useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PoleVaultLeaderboard } from "@/components/leaderboards/PoleVaultLeaderboard";
 import { SprintLeaderboard } from "@/components/leaderboards/SprintLeaderboard";
+import { SprintLeaderboardWurf } from "@/components/leaderboards/SprintLeaderboardWurf";
 import { ClimbingLeaderboard } from "@/components/leaderboards/ClimbingLeaderboard";
+import { KugelLeaderboard } from "@/components/leaderboards/KugelLeaderboard";
+import { FiveJumpLeaderboard } from "@/components/leaderboards/FiveJumpLeaderboard";
+import { AllWurfLeaderboard } from "@/components/leaderboards/AllWurfLeaderboard";
+import { AllStabLeaderboard } from "@/components/leaderboards/AllStabLeaderboard";
+import { PoleVaultDisplay } from "@/components/PoleVaultDisplay";
+import { ClimbingDisplay } from '@/components/ClimbingDisplay';
+import { SprintDisplay } from '@/components/SprintDisplay';
 
-type LeaderboardType = 'pole' | 'sprint' | 'climbing';
+type LeaderboardType = 'pole' | 'sprint' | 'climbing' | 'kugel' | 'fivejump' | 'allwurf' | 'allstab' | 'sprintwurf';
 
 export default function LeaderboardPage() {
   const [selectedLeaderboard, setSelectedLeaderboard] = useState<LeaderboardType>('pole');
@@ -34,12 +42,37 @@ export default function LeaderboardPage() {
                 </SelectItem>
                 <SelectItem value="sprint" className="text-lg py-3 cursor-pointer">
                   <div className="flex items-center gap-2">
-                    🏃 Sprint
+                    🏃 Sprint (Stab)
                   </div>
                 </SelectItem>
                 <SelectItem value="climbing" className="text-lg py-3 cursor-pointer">
                   <div className="flex items-center gap-2">
                     🧗 Climbing
+                  </div>
+                </SelectItem>
+                <SelectItem value="kugel" className="text-lg py-3 cursor-pointer">
+                  <div className="flex items-center gap-2">
+                    🏋️ Kugelstoßen
+                  </div>
+                </SelectItem>
+                <SelectItem value="sprintwurf" className="text-lg py-3 cursor-pointer">
+                  <div className="flex items-center gap-2">
+                    � Sprint (Wurf)
+                  </div>
+                </SelectItem>
+                <SelectItem value="fivejump" className="text-lg py-3 cursor-pointer">
+                  <div className="flex items-center gap-2">
+                    🦘 5-Jump
+                  </div>
+                </SelectItem>
+                <SelectItem value="allwurf" className="text-lg py-3 cursor-pointer">
+                  <div className="flex items-center gap-2">
+                    🏆 All Wurf Rankings
+                  </div>
+                </SelectItem>
+                <SelectItem value="allstab" className="text-lg py-3 cursor-pointer">
+                  <div className="flex items-center gap-2">
+                    🏆 All Stab Rankings
                   </div>
                 </SelectItem>
               </SelectContent>
@@ -51,10 +84,16 @@ export default function LeaderboardPage() {
               {selectedLeaderboard === 'pole' && <PoleVaultLeaderboard />}
               {selectedLeaderboard === 'sprint' && <SprintLeaderboard />}
               {selectedLeaderboard === 'climbing' && <ClimbingLeaderboard />}
+              {selectedLeaderboard === 'kugel' && <KugelLeaderboard />} 
+              {selectedLeaderboard === 'sprintwurf' && <SprintLeaderboardWurf />} 
+              {selectedLeaderboard === 'fivejump' && <FiveJumpLeaderboard />}
+              {selectedLeaderboard === 'allwurf' && <AllWurfLeaderboard />}
+              {selectedLeaderboard === 'allstab' && <AllStabLeaderboard />}
             </div>
           </div>
         </div>
       </div>
+      <PoleVaultDisplay />
     </div>
   );
 } 

@@ -1,30 +1,51 @@
 "use client";
 import { useState, useEffect } from 'react';
+import { listen } from '@tauri-apps/api/event';
 import { invoke } from '@tauri-apps/api/core';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 interface Competitor {
   id: string;
   name: string;
-  climbing_time: number | null | undefined;  // Changed from seilsprung_count
+  climbing_time: number | null;
 }
 
 export function ClimbingLeaderboard() {
   const [competitors, setCompetitors] = useState<Competitor[]>([]);
-  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     loadCompetitors();
-    const interval = setInterval(() => {
-      setRefreshKey(prev => prev + 1);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [refreshKey]);
+    console.log('Initial load triggered');
+    
+    // Add refresh event listener 
+    const unsubscribe = listen('refresh-data', () => {
+      console.log('Event-based refresh triggered');
+      loadCompetitors();
+    });
+
+    // Add interval to refresh every 2 seconds
+    const intervalId = setInterval(() => {
+      console.log('Interval-based refresh triggered');
+      loadCompetitors();
+    }, 2000);
+
+    return () => {
+      unsubscribe.then(fn => fn());
+      clearInterval(intervalId);
+    };
+  }, []);
 
   async function loadCompetitors() {
     try {
-      const data = await invoke('get_competition_data');
-      setCompetitors(data.competitors);
+      const data: { competitors: Competitor[] } = await invoke('get_competition_data');
+      console.log('Received data:', data); // Debug log
+      setCompetitors(prevCompetitors => {
+        // Only update if data is different
+        if (JSON.stringify(prevCompetitors) !== JSON.stringify(data.competitors)) {
+          return data.competitors;
+        }
+        return prevCompetitors;
+      });
     } catch (error) {
       console.error('Failed to load competitors:', error);
     }
@@ -34,7 +55,7 @@ export function ClimbingLeaderboard() {
     return competitors
       .filter(competitor => typeof competitor.climbing_time === 'number')
       .sort((a, b) => {
-        if (a.climbing_time === undefined || b.climbing_time === undefined) return 0;
+        if (a.climbing_time === null || b.climbing_time === null) return 0;
         return a.climbing_time - b.climbing_time;  // Sort by fastest time (ascending)
       });
   }
@@ -48,73 +69,34 @@ export function ClimbingLeaderboard() {
         <p className="text-gray-600 mt-2">Rankings based on fastest climbing times</p>
       </div>
 
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+      <div className="bg-white rounded-lg shadow-lg overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow className="bg-blue-50">
-              <TableHead className="font-semibold text-gray-700">Rank</TableHead>
-              <TableHead className="font-semibold text-gray-700">Name</TableHead>
-              <TableHead className="font-semibold text-gray-700">Time</TableHead>
-              <TableHead className="font-semibold text-gray-700">Status</TableHead>
+            <TableRow className="bg-gray-50">
+              <TableHead className="py-6 text-2xl font-bold">Rank</TableHead>
+              <TableHead className="py-6 text-2xl font-bold">Athlete</TableHead>
+              <TableHead className="py-6 text-2xl font-bold">Time</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {rankings.map((competitor, index) => (
-              <TableRow 
-                key={competitor.id} 
-                className={`
-                  hover:bg-blue-50 transition-colors
-                  ${index === 0 ? 'bg-yellow-50' : ''}
-                  ${index === 1 ? 'bg-gray-50' : ''}
-                  ${index === 2 ? 'bg-orange-50' : ''}
-                `}
-              >
-                <TableCell className="py-8 text-3xl font-bold pl-8">
-                  <div className="flex items-center gap-3">
-                    {index === 0 && "🥇"}
-                    {index === 1 && "🥈"}
-                    {index === 2 && "🥉"}
-                    {index + 1}
+              <TableRow key={competitor.id} className="hover:bg-gray-50">
+                <TableCell className="py-8">
+                  <div className="text-4xl font-bold text-gray-800">#{index + 1}</div>
+                </TableCell>
+                <TableCell className="py-8">
+                  <div className="text-3xl font-bold text-gray-700">{competitor.name}</div>
+                </TableCell>
+                <TableCell className="py-8">
+                  <div className="text-3xl font-bold text-blue-600">
+                    {competitor.climbing_time?.toFixed(2)}s
                   </div>
-                </TableCell>
-                <TableCell className="py-8">
-                  <div className="text-2xl font-semibold text-gray-800">
-                    {competitor.name}
-                  </div>
-                </TableCell>
-                <TableCell className="py-8">
-                  {typeof competitor.climbing_time === 'number' ? (
-                    <div className="text-3xl font-bold text-blue-600">
-                      {competitor.climbing_time.toFixed(2)}
-                      <span className="text-2xl ml-1">s</span>
-                    </div>
-                  ) : (
-                    <div className="text-2xl font-bold text-gray-400 italic">
-                      No time
-                    </div>
-                  )}
-                </TableCell>
-                <TableCell className="py-8">
-                  {typeof competitor.climbing_time === 'number' && (
-                    <div className={`
-                      inline-flex items-center px-4 py-2 rounded-full
-                      ${index === 0 ? 'bg-yellow-100 text-yellow-800' : ''}
-                      ${index === 1 ? 'bg-gray-100 text-gray-800' : ''}
-                      ${index === 2 ? 'bg-orange-100 text-orange-800' : ''}
-                      ${index > 2 ? 'bg-blue-100 text-blue-800' : ''}
-                    `}>
-                      {index === 0 && "Gold 🏆"}
-                      {index === 1 && "Silver 🥈"}
-                      {index === 2 && "Bronze 🥉"}
-                      {index > 2 && `${index + 1}th Place`}
-                    </div>
-                  )}
                 </TableCell>
               </TableRow>
             ))}
             {rankings.length === 0 && (
               <TableRow>
-                <TableCell colSpan={4} className="text-center py-8 text-gray-500 italic">
+                <TableCell colSpan={3} className="text-center py-8 text-gray-500 text-2xl">
                   No climbing times recorded yet
                 </TableCell>
               </TableRow>

@@ -11,7 +11,7 @@ interface Competitor {
   sprint_time: number | null;
 }
 
-export function SprintLeaderboard() {
+export function SprintLeaderboardWurf() {
   const [competitors, setCompetitors] = useState<Competitor[]>([]);
 
   useEffect(() => {
@@ -30,7 +30,7 @@ export function SprintLeaderboard() {
   async function loadCompetitors() {
     try {
       const data = await invoke('get_competition_data');
-      setCompetitors(data.competitors.filter(c => c.competition_type === 'Stab'));
+      setCompetitors(data.competitors.filter(c => c.competition_type === 'Wurf'));
     } catch (error) {
       console.error('Failed to load competitors:', error);
     }
@@ -51,7 +51,7 @@ export function SprintLeaderboard() {
     <div className="p-12 max-w-7xl mx-auto bg-gray-50 min-h-screen">
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-gray-800">Sprint Leaderboard 🏃</h1>
-        <p className="text-gray-600 mt-2">Rankings based on fastest sprint times (Stab)</p>
+        <p className="text-gray-600 mt-2">Rankings based on fastest sprint times (Wurf)</p>
       </div>
 
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">

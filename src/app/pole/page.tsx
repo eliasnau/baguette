@@ -8,16 +8,18 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from 'next/navigation';
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
 import toast from 'react-hot-toast';
+import { emit } from '@tauri-apps/api/event';
 
 interface Competitor {
   id: string;
   name: string;
+  competition_type: 'Stab' | 'Wurf';
   pole_vault_attempts: PoleVaultAttempt[] | null;
 }
 
 interface PoleVaultAttempt {
   height: number;
-  successful: boolean;
+  successful: boolean;  
 }
 
 interface AttemptsByHeight {
@@ -45,7 +47,7 @@ export default function PolePage() {
     try {
       setIsLoading(true);
       const data = await invoke('get_competition_data');
-      setCompetitors(data.competitors);
+      setCompetitors(data.competitors.filter(c => c.competition_type === 'Stab'));
     } catch (error) {
       console.error('Failed to load competitors:', error);
     } finally {
@@ -64,8 +66,26 @@ export default function PolePage() {
         successful
       });
       await invoke('save_data');
-      setCurrentJumper(null);
-      setRefreshKey(prev => prev + 1);
+
+      // Emit refresh event
+      await emit('refresh-data');
+      
+      // Emit the result event first
+      await emit(successful ? 'pole-vault-success' : 'pole-vault-failure', {
+        name: currentJumper.name,
+        height: currentHeight
+      });
+      
+      // Emit refresh event
+      
+      
+      // Wait a moment before hiding the display
+      setTimeout(async () => {
+        await emit('hide-pole-vault');
+        setCurrentJumper(null);
+        setRefreshKey(prev => prev + 1);
+      }, 2000); // Show result for 2 seconds
+      
     } catch (error) {
       console.error('Failed to record attempt:', error);
     } finally {
@@ -156,6 +176,11 @@ export default function PolePage() {
       console.error(e);
      });
   }
+
+  const handleSetCurrentJumper = async (competitor: Competitor) => {
+    setCurrentJumper(competitor);
+    await emit('show-pole-vault', {competitorId: competitor.id, height: currentHeight});
+  };
 
   return (
     <div className="p-8 max-w-7xl mx-auto bg-gray-50 min-h-screen">
@@ -271,7 +296,7 @@ export default function PolePage() {
                     {!currentJumper && canAttempt && (
                       <Button
                         variant="outline"
-                        onClick={() => setCurrentJumper(competitor)}
+                        onClick={() => handleSetCurrentJumper(competitor)}
                         disabled={currentJumper !== null}
                         className="hover:bg-blue-50 transition-colors"
                       >

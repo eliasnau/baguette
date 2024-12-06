@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
+import { listen } from '@tauri-apps/api/event';
 import { invoke } from '@tauri-apps/api/core';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
@@ -27,17 +28,28 @@ export function PoleVaultLeaderboard() {
 
   useEffect(() => {
     loadCompetitors();
-    const interval = setInterval(() => {
-      setRefreshKey(prev => prev + 1);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [refreshKey]);
+    
+    // Add refresh event listener
+    const unsubscribe = listen('refresh-data', () => {
+      loadCompetitors();
+    });
+
+    // Add interval to refresh every 2 seconds
+    const intervalId = setInterval(() => {
+      console.log('Interval-based refresh triggered');
+      loadCompetitors();
+    }, 2000);
+
+    return () => {
+      unsubscribe.then(fn => fn());
+    };
+  }, []);
 
   async function loadCompetitors() {
     try {
       const data = await invoke('get_competition_data');
       setCompetitors(data.competitors);
-    } catch (error) {
+    } catch (error) {	
       console.error('Failed to load competitors:', error);
     }
   }

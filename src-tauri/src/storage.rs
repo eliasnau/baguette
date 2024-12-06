@@ -12,15 +12,39 @@ pub struct Competition {
 pub struct Competitor {
     pub id: String,
     pub name: String,
+    pub competition_type: CompetitionType,
+    // Stab disciplines
     pub pole_vault_attempts: Option<Vec<PoleVaultAttempt>>,
-    pub sprint_time: Option<f64>,
     pub climbing_time: Option<f64>,
+    pub sprint_time: Option<f64>,
+    // Wurf disciplines
+    pub sprint_5jump: Option<Vec<JumpAttempt>>,
+    pub kugel_distance: Option<f64>,
+    pub wsprint_time: Option<f64>,
+    pub kugel_attempts: Option<Vec<KugelAttempt>>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
+pub enum CompetitionType {
+    Stab,
+    Wurf,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
+
 pub struct PoleVaultAttempt {
     pub height: f64,
     pub successful: bool,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct KugelAttempt {
+    pub distance: f64,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct JumpAttempt {
+    pub distance: f64,
 }
 
 pub struct Storage {
@@ -52,13 +76,18 @@ impl Storage {
         &self.competition
     }
 
-    pub fn add_competitor(&mut self, id: String, name: &str) {
+    pub fn add_competitor(&mut self, id: String, name: &str, competition_type: CompetitionType) {
         self.competition.competitors.push(Competitor {
             id,
             name: name.to_string(),
+            competition_type,
             pole_vault_attempts: None,
-            sprint_time: None,
             climbing_time: None,
+            sprint_time: None,
+            sprint_5jump: None,
+            kugel_distance: None,
+            wsprint_time: None,
+            kugel_attempts: None,
         });
     }
 
@@ -75,7 +104,7 @@ impl Storage {
             Err("Competitor not found".to_string())
         }
     }
-
+    
     pub fn set_climbing_time(
         &mut self,
         competitor_id: String,
@@ -84,6 +113,7 @@ impl Storage {
         if let Some(competitor) = self
             .competition
             .competitors
+            
             .iter_mut()
             .find(|c| c.id == competitor_id)
         {
@@ -180,6 +210,108 @@ impl Storage {
                 })
         } else {
             None
+        }
+    }
+
+    pub fn set_kugel_distance(&mut self, competitor_id: String, distance: f64) -> Result<(), String> {
+        if let Some(competitor) = self
+            .competition
+            .competitors
+            .iter_mut()
+            .find(|c| c.id == competitor_id)
+        {
+            competitor.kugel_distance = Some(distance);
+            Ok(())
+        } else {
+            Err("Competitor not found".to_string())
+        }
+    }
+
+    pub fn set_wsprint_time(
+        &mut self,
+        competitor_id: String,
+        time: f64,
+    ) -> Result<(), String> {
+        if let Some(competitor) = self
+            .competition
+            .competitors
+            .iter_mut()
+            .find(|c| c.id == competitor_id)
+        {
+            competitor.wsprint_time = Some(time);
+            Ok(())
+        } else {
+            Err("Competitor not found".to_string())
+        }
+    }
+
+    pub fn add_kugel_attempt(
+        &mut self,
+        competitor_id: &str,
+        distance: f64,
+    ) -> Result<(), String> {
+        if let Some(competitor) = self
+            .competition
+            .competitors
+            .iter_mut()
+            .find(|c| c.id == competitor_id)
+        {
+            if competitor.competition_type != CompetitionType::Wurf {
+                return Err("Competitor is not a Wurf competitor".to_string());
+            }
+
+            let attempt = KugelAttempt { distance };
+            
+            match &mut competitor.kugel_attempts {
+                Some(attempts) if attempts.len() >= 3 => {
+                    Err("Maximum number of attempts reached".to_string())
+                }
+                Some(attempts) => {
+                    attempts.push(attempt);
+                    Ok(())
+                }
+                None => {
+                    competitor.kugel_attempts = Some(vec![attempt]);
+                    Ok(())
+                }
+            }
+        } else {
+            Err("Competitor not found".to_string())
+        }
+    }
+
+    pub fn add_jump_attempt(
+        &mut self,
+        competitor_id: &str,
+        distance: f64,
+    ) -> Result<(), String> {
+        if let Some(competitor) = self
+            .competition
+            .competitors
+            .iter_mut()
+            .find(|c| c.id == competitor_id)
+        {
+            if competitor.competition_type != CompetitionType::Wurf {
+                return Err("Competitor is not a Wurf competitor".to_string());
+            }
+
+            let attempt = JumpAttempt { distance };
+            
+            match &mut competitor.sprint_5jump {
+                Some(attempts) if attempts.len() >= 3 => {
+                    Err("Maximum number of attempts (3) reached".to_string())
+                }
+                Some(attempts) => {
+                    attempts.push(attempt);
+                    Ok(())
+                }
+                None => {
+                    competitor.sprint_5jump = Some(vec![attempt]);
+                    Ok(())
+                }
+            }
+        } else {
+            Err("Competitor not found".to_string())
         }
     }
 }
