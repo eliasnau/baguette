@@ -113,16 +113,17 @@ export default function CompetitionsPage() {
   return (
     <div className="p-8 max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold">Competition Management</h1>
+        <h1 className="text-2xl font-bold">Wettbewerbsmanagement
+        </h1>
         
         {/* Create Competition Dialog */}
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button>Create Competition</Button>
+            <Button>Wetbewerb erstellen</Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Create New Competition</DialogTitle>
+              <DialogTitle>Neuen Wettbewerb erstellen</DialogTitle>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <Input
@@ -130,7 +131,7 @@ export default function CompetitionsPage() {
                 onChange={(e) => setNewCompetitionName(e.target.value)}
                 placeholder="Competition Name"
               />
-              <Button onClick={createCompetition}>Create</Button>
+              <Button onClick={createCompetition}>Erstellen</Button>
             </div>
           </DialogContent>
         </Dialog>
@@ -160,15 +161,15 @@ export default function CompetitionsPage() {
       {selectedCompetition && (
         <div>
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">Competitors</h2>
+            <h2 className="text-xl font-semibold">Sportler</h2>
             <div className="flex gap-4">
               <Dialog open={competitorDialogOpen} onOpenChange={setCompetitorDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button>Add Competitor</Button>
+                  <Button>Sportler hinzufügen</Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Add New Competitor</DialogTitle>
+                    <DialogTitle>Neuen Sportler hinzufügen</DialogTitle>
                   </DialogHeader>
                   <div className="grid gap-4 py-4">
                     <Input
@@ -176,7 +177,7 @@ export default function CompetitionsPage() {
                       onChange={(e) => setNewCompetitorName(e.target.value)}
                       placeholder="Competitor Name"
                     />
-                    <Button onClick={addCompetitor}>Add</Button>
+                    <Button onClick={addCompetitor}>Hinzufügen</Button>
                   </div>
                 </DialogContent>
               </Dialog>
@@ -185,7 +186,7 @@ export default function CompetitionsPage() {
                 variant="secondary"
                 onClick={() => router.push('/pole')}
               >
-                Go to Pole Vault
+                Stabhochsprung
               </Button>
             </div>
           </div>
@@ -196,9 +197,9 @@ export default function CompetitionsPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Name</TableHead>
-                  <TableHead>Sprint Time</TableHead>
-                  <TableHead>Seilsprung Count</TableHead>
-                  <TableHead>Pole Vault Attempts</TableHead>
+                  <TableHead>Sprint Zeit</TableHead>
+                  <TableHead>Seilsprung Zeit</TableHead>
+                  <TableHead>Stabhochsprung versuche</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -208,14 +209,14 @@ export default function CompetitionsPage() {
                     <TableCell>{competitor.sprint_time ?? '-'}</TableCell>
                     <TableCell>{competitor.seilsprung_count ?? '-'}</TableCell>
                     <TableCell>
-                      {competitor.pole_vault_attempts?.length ?? 0} attempts
+                      {competitor.pole_vault_attempts?.length ?? 0} versuche
                     </TableCell>
                   </TableRow>
                 ))}
                 {selectedCompetition.competitors.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={4} className="text-center">
-                      No competitors found
+                      Keinen Teilnehmer gefunden
                     </TableCell>
                   </TableRow>
                 )}

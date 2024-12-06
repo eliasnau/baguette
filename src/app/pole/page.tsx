@@ -193,12 +193,12 @@ export default function PolePage() {
             onClick={openLeaderboard}
             className="ml-4 bg-blue-50 hover:bg-blue-100 text-blue-600"
           >
-            View Leaderboard 🏆
+            Bestenliste🏆
           </Button>
         </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <span className="text-gray-600">Current Height:</span>
+            <span className="text-gray-600">Aktuelle Höhe:</span>
             <Input
               type="number"
               value={currentHeight}
@@ -218,11 +218,11 @@ export default function PolePage() {
           <div className="flex justify-between items-center">
             <div>
               <h3 className="text-xl font-semibold text-blue-900">
-                Current Jumper: {currentJumper.name}
+                Aktueller Springer: {currentJumper.name}
               </h3>
-              <p className="text-blue-700 mt-1">Attempting: {currentHeight}m</p>
+              <p className="text-blue-700 mt-1">Springt: {currentHeight}m</p>
               <div className="text-blue-600 mt-1">
-                Attempts at current height: {
+                Versuche an der aktuellen Höhe: {
                   getAttemptSequence(currentJumper.pole_vault_attempts, currentHeight)
                 }
               </div>
@@ -233,14 +233,14 @@ export default function PolePage() {
                 className="bg-green-500 hover:bg-green-600 text-white px-6"
                 onClick={() => handleAttempt(true)}
               >
-                Success (o)
+                Geschafft (o)
               </Button>
               <Button
                 variant="default"
                 className="bg-red-500 hover:bg-red-600 text-white px-6"
                 onClick={() => handleAttempt(false)}
               >
-                Failure (x)
+                Nicht geschafft (x)
               </Button>
             </div>
           </div>
@@ -277,19 +277,19 @@ export default function PolePage() {
                   <TableCell>
                     {currentJumper?.id === competitor.id ? (
                       <span className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-800">
-                        Currently Jumping
+                        Aktueller Springer
                       </span>
                     ) : !canAttempt && highestSuccess >= currentHeight ? (
                       <span className="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800">
-                        Height Cleared ✓ (Best: {highestSuccess}m)
+                        Höhe geschafft ✓ (Best: {highestSuccess}m)
                       </span>
                     ) : !canAttempt && highestSuccess < currentHeight ? (
                       <span className="inline-flex items-center px-3 py-1 rounded-full bg-red-100 text-red-800">
-                        Failed Height ✗ {highestSuccess > 0 ? `(Best: ${highestSuccess}m)` : ''}
+                        Höhe nicht geschafft ✗ {highestSuccess > 0 ? `(Best: ${highestSuccess}m)` : ''}
                       </span>
                     ) : (
                       <span className="inline-flex items-center px-3 py-1 rounded-full bg-yellow-100 text-yellow-800">
-                        Can Attempt {highestSuccess > 0 ? `(Best: ${highestSuccess}m)` : ''}
+                        Kann versuchen {highestSuccess > 0 ? `(Best: ${highestSuccess}m)` : ''}
                       </span>
                     )}
                   </TableCell>
@@ -301,7 +301,7 @@ export default function PolePage() {
                         disabled={currentJumper !== null}
                         className="hover:bg-blue-50 transition-colors"
                       >
-                        Set as Current Jumper
+                        Springen lassen
                       </Button>
                     )}
                   </TableCell>
@@ -314,7 +314,7 @@ export default function PolePage() {
 
       {isLoading && (
         <div className="mt-4 text-center text-gray-500">
-          Loading...
+          Lädt...
         </div>
       )}
     </div>

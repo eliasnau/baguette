@@ -152,17 +152,17 @@ export function PoleVaultLeaderboard() {
       <Table>
         <TableHeader>
           <TableRow className="bg-gray-100 border-b-2 border-gray-200">
-            <TableHead className="py-6 text-2xl font-bold text-gray-800 pl-8 w-32">Rank</TableHead>
-            <TableHead className="py-6 text-2xl font-bold text-gray-800 w-48">Athlete</TableHead>
-            <TableHead className="py-6 text-2xl font-bold text-gray-800 w-48">Best Height</TableHead>
+            <TableHead className="py-6 text-2xl font-bold text-gray-800 pl-8 w-32">Rang</TableHead>
+            <TableHead className="py-6 text-2xl font-bold text-gray-800 w-48">Sportler</TableHead>
+            <TableHead className="py-6 text-2xl font-bold text-gray-800 w-48">Beste Höhe</TableHead>
             <TableHead className="py-6 text-2xl font-bold text-gray-800 w-96">
               <div className="flex flex-col">
-                <span>Attempts at Best Height</span>
+                <span>Versuche bei der besten Höhe</span>
                 <span className="text-lg font-normal text-gray-600 mt-1">
                   <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-green-100 text-green-700 border border-green-300 mr-2">o</span>
-                  Success
+                  Geschafft
                   <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-red-100 text-red-700 border border-red-300 ml-4 mr-2">x</span>
-                  Failure
+                  Nicht geschafft
                 </span>
               </div>
             </TableHead>
@@ -234,12 +234,12 @@ export function PoleVaultLeaderboard() {
                         ))
                       ) : (
                         <span className={`inline-flex items-center justify-center h-16 px-8 rounded-full text-2xl font-bold transition-all duration-200 ${attemptStyles.noAttempts}`}>
-                          No Attempts
+                          Keine Versuche
                         </span>
                       )
                     ) : (
                       <span className={`inline-flex items-center justify-center h-16 px-8 rounded-full text-2xl font-bold transition-all duration-200 ${attemptStyles.failedAll}`}>
-                        Failed All
+                        Keinen gültigen Versuch
                       </span>
                     )}
                   </div>
@@ -265,7 +265,7 @@ export function PoleVaultLeaderboard() {
                       ))}
                     </div>
                   ) : (
-                    <div className="text-gray-500 italic">No attempts yet</div>
+                    <div className="text-gray-500 italic">Noch keine Versuche</div>
                   )}
                 </TableCell>
                 <TableCell className="py-8">
@@ -280,7 +280,7 @@ export function PoleVaultLeaderboard() {
                         {successRate.rate}%
                       </div>
                       <div className="text-sm text-gray-500">
-                        {successRate.successful} of {successRate.total} attempts
+                        {successRate.successful} of {successRate.total} versuceh
                       </div>
                       <div className="w-24 h-2 bg-gray-200 rounded-full mt-2">
                         <div 
@@ -295,7 +295,7 @@ export function PoleVaultLeaderboard() {
                       </div>
                     </div>
                   ) : (
-                    <div className="text-gray-500 italic">No attempts yet</div>
+                    <div className="text-gray-500 italic">Noch keine Versuche</div>
                   )}
                 </TableCell>
                 <TableCell className="py-8">
@@ -304,7 +304,7 @@ export function PoleVaultLeaderboard() {
                       {personalBest}m
                     </div>
                   ) : (
-                    <div className="text-gray-500 italic">No successful jumps</div>
+                    <div className="text-gray-500 italic">Keinen gültigen Versuch</div>
                   )}
                 </TableCell>
               </TableRow>
@@ -313,7 +313,7 @@ export function PoleVaultLeaderboard() {
           {rankings.length === 0 && (
             <TableRow>
               <TableCell colSpan={5} className="text-center py-8 text-gray-500 italic">
-                No pole vault attempts recorded yet
+                Noch kein Stabhochsprung Rekordversuch
               </TableCell>
             </TableRow>
           )}

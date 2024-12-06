@@ -96,11 +96,11 @@ export default function CompetitionsPage() {
         
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button>Create Competition</Button> 
+            <Button>Wettkampf erstellen</Button> 
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Create New Competition</DialogTitle>
+              <DialogTitle>Neuen Wettkampf erstellen</DialogTitle>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <Input
@@ -108,7 +108,7 @@ export default function CompetitionsPage() {
                 onChange={(e) => setNewCompetitionName(e.target.value)}
                 placeholder="Competition Name"
               />
-              <Button onClick={createCompetition}>Create</Button>
+              <Button onClick={createCompetition}>Erstellen</Button>
             </div>
           </DialogContent>
         </Dialog>
@@ -137,15 +137,15 @@ export default function CompetitionsPage() {
       {selectedCompetition && (
         <div>
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">Competitors</h2>
+            <h2 className="text-xl font-semibold">Sportler</h2>
             <div className="flex gap-4">
               <Dialog open={competitorDialogOpen} onOpenChange={setCompetitorDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button>Add Competitor</Button>
+                  <Button>Sportler hinzufügen</Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Add New Competitor</DialogTitle>
+                    <DialogTitle>BNeuen Sportler hinzufügen</DialogTitle>
                   </DialogHeader>
                   <div className="grid gap-4 py-4">
                     <Input
@@ -161,41 +161,41 @@ export default function CompetitionsPage() {
                         <SelectValue placeholder="Select competition type" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Stab">Stab Competition</SelectItem>
-                        <SelectItem value="Wurf">Wurf Competition</SelectItem>
+                        <SelectItem value="Stab">Stab Wettkampf</SelectItem>
+                        <SelectItem value="Wurf">Wurf Wettkampf</SelectItem>
                       </SelectContent>
                     </Select>
-                    <Button onClick={addCompetitor}>Add</Button>
+                    <Button onClick={addCompetitor}>Hinzufügen</Button>
                   </div>
                 </DialogContent>
               </Dialog>
               
               {/* All navigation buttons */}
               <Button variant="secondary" onClick={() => router.push('/pole')}>
-                Go to Pole Vault
+                Stabhocsprung
               </Button>
               <Button variant="secondary" onClick={() => router.push('/climbing')}>
-                Go to Climbing
+                Seilklettern
               </Button>
               <Button variant="secondary" onClick={() => router.push('/sprint')}>
-                Go to Stab Sprint
+                Stabsprint
               </Button>
               <Button variant="secondary" onClick={() => router.push('/wsprint')}>
-                Go to Wurf Sprint
+                Wurfsprint
               </Button>
               <Button variant="secondary" onClick={() => router.push('/jump')}>
-                Go to 5-Jump
+                Froschsprünge
               </Button>
               <Button variant="secondary" onClick={() => router.push('/kugel')}>
-                Go to Kugel
+                Kugelstoßen
               </Button>
             </div>
           </div>
 
           <Tabs value={activeTab} onValueChange={(value: 'Stab' | 'Wurf') => setActiveTab(value)}>
             <TabsList className="mb-4">
-              <TabsTrigger value="Stab">Stab Competition</TabsTrigger>
-              <TabsTrigger value="Wurf">Wurf Competition</TabsTrigger>
+              <TabsTrigger value="Stab">Stab Wettkampf</TabsTrigger>
+              <TabsTrigger value="Wurf">Wurf Wettkampf</TabsTrigger>
             </TabsList>
 
             <TabsContent value="Stab">
@@ -203,15 +203,15 @@ export default function CompetitionsPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Name</TableHead>
-                    <TableHead>Pole Vault Attempts</TableHead>
-                    <TableHead>Climbing Time</TableHead>
+                    <TableHead>Stabhochsprung versuche</TableHead>
+                    <TableHead>Kletterzeit</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {getCompetitorsByType('Stab').map((competitor) => (
                     <TableRow key={competitor.id}>
                       <TableCell>{competitor.name}</TableCell>
-                      <TableCell>{competitor.pole_vault_attempts?.length ?? 0} attempts</TableCell>
+                      <TableCell>{competitor.pole_vault_attempts?.length ?? 0} versuche</TableCell>
                       <TableCell>{competitor.climbing_time ?? '-'}</TableCell>
                     </TableRow>
                   ))}
@@ -224,8 +224,8 @@ export default function CompetitionsPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Name</TableHead>
-                    <TableHead>5-Jump Distance</TableHead>
-                    <TableHead>Kugel Distance</TableHead>
+                    <TableHead>Froschsprung weite</TableHead>
+                    <TableHead>Kugel weite</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>

@@ -77,23 +77,23 @@ export function AllWurfLeaderboard() {
   }
 
   if (isLoading) {
-    return <div className="text-center p-4">Loading...</div>;
+    return <div className="text-center p-4">Lädt...</div>;
   }
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      <h2 className="text-4xl font-bold mb-8 text-center">Wurf Group Rankings 🏆</h2>
+      <h2 className="text-4xl font-bold mb-8 text-center">Rangliste der Wurf-Gruppe  🏆</h2>
       
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow className="bg-gray-50">
-              <TableHead className="py-6 text-2xl font-bold">Rank</TableHead>
-              <TableHead className="py-6 text-2xl font-bold">Athlete</TableHead>
+              <TableHead className="py-6 text-2xl font-bold">Rang</TableHead>
+              <TableHead className="py-6 text-2xl font-bold">Sportler</TableHead>
               <TableHead className="py-6 text-2xl font-bold">Kugelstoßen 🏋️</TableHead>
-              <TableHead className="py-6 text-2xl font-bold">5-Jump 🦘</TableHead>
+              <TableHead className="py-6 text-2xl font-bold">Froschspringen 🦘</TableHead>
               <TableHead className="py-6 text-2xl font-bold">Sprint 🏃</TableHead>
-              <TableHead className="py-6 text-2xl font-bold">Total Score</TableHead>
+              <TableHead className="py-6 text-2xl font-bold">Ergebnisse</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -147,7 +147,7 @@ export function AllWurfLeaderboard() {
             {competitors.length === 0 && (
               <TableRow>
                 <TableCell colSpan={6} className="text-center py-8 text-gray-500 text-2xl">
-                  No competitors found
+                 Keine Sportler gefunden
                 </TableCell>
               </TableRow>
             )}

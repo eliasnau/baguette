@@ -156,18 +156,18 @@ export function PoleVaultDisplay() {
               <div className="text-4xl font-bold text-green-400 mb-2">
                 {stats.successRate}%
               </div>
-              <div className="text-xl text-gray-300">Success Rate</div>
+              <div className="text-xl text-gray-300">Erfolgsquote</div>
             </div>
             <div className="bg-white/10 rounded-xl p-6 text-center">
               <div className="text-4xl font-bold text-purple-400 mb-2">
                 {stats.totalAttempts}
               </div>
-              <div className="text-xl text-gray-300">Total Attempts</div>
+              <div className="text-xl text-gray-300">Gesamtzahl der Versuche </div>
             </div>
           </div>
 
           <div className="space-y-4">
-            <h3 className="text-2xl font-bold text-gray-300 mb-4">Recent Heights</h3>
+            <h3 className="text-2xl font-bold text-gray-300 mb-4">Vorherige Höhen</h3>
             {progression.map(({ height, attempts }, index) => (
               <div 
                 key={height}

@@ -61,7 +61,7 @@ export function KugelLeaderboard() {
 
   function getAttemptCircles(attempts: KugelAttempt[] | null): JSX.Element {
     if (!attempts || attempts.length === 0) {
-      return <span className="text-gray-500 text-xl">No attempts yet</span>;
+      return <span className="text-gray-500 text-xl">Noch keine Versuche</span>;
     }
 
     return (
@@ -91,21 +91,21 @@ export function KugelLeaderboard() {
   }
 
   if (isLoading) {
-    return <div className="text-center p-4">Loading...</div>;
+    return <div className="text-center p-4">Lädt...</div>;
   }
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      <h2 className="text-4xl font-bold mb-8 text-center">Kugelstoßen Rankings 🏋️</h2>
+      <h2 className="text-4xl font-bold mb-8 text-center">Kugelstoßen Ergebnisse 🏋️</h2>
       
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow className="bg-gray-50">
-              <TableHead className="py-6 text-2xl font-bold">Rank</TableHead>
-              <TableHead className="py-6 text-2xl font-bold">Athlete</TableHead>
-              <TableHead className="py-6 text-2xl font-bold">Best</TableHead>
-              <TableHead className="py-6 text-2xl font-bold">Attempts</TableHead>
+              <TableHead className="py-6 text-2xl font-bold">Rang</TableHead>
+              <TableHead className="py-6 text-2xl font-bold">Sportler</TableHead>
+              <TableHead className="py-6 text-2xl font-bold">bester Versuch</TableHead>
+              <TableHead className="py-6 text-2xl font-bold">Versuche</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -147,7 +147,7 @@ export function KugelLeaderboard() {
             {competitors.length === 0 && (
               <TableRow>
                 <TableCell colSpan={4} className="text-center py-8 text-gray-500 text-2xl">
-                  No competitors found
+                  Keine Teilnehmer gefunden
                 </TableCell>
               </TableRow>
             )}
