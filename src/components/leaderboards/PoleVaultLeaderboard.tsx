@@ -21,7 +21,7 @@ const attemptStyles = {
   success: "bg-green-100 text-green-700 border-2 border-green-300 shadow-md hover:bg-green-200 hover:shadow-lg",
   failure: "bg-red-100 text-red-700 border-2 border-red-300 shadow-md hover:bg-red-200 hover:shadow-lg",
   noAttempts: "bg-gray-100 text-gray-600 border-2 border-gray-300 shadow-md",
-  failedAll: "bg-red-50 text-red-600 border-2 border-red-200 shadow-md"
+  failedAll: "bg-red-100 text-red-700 border-2 border-red-300 shadow-md"
 };
 
 export function PoleVaultLeaderboard() {
@@ -50,7 +50,7 @@ export function PoleVaultLeaderboard() {
   async function loadCompetitors() {
     try {
       const data = await invoke('get_competition_data');
-      setCompetitors(data.competitors);
+      setCompetitors(data.competitors.filter(c => c.competition_type === 'Stab'));
     } catch (error) {	
       console.error('Failed to load competitors:', error);
     }
@@ -65,7 +65,8 @@ export function PoleVaultLeaderboard() {
           highestHeight: 0,
           totalAttempts: 0,
           attemptSequence: '',
-          status: 'No attempts yet'
+          status: '',
+          hasAttempted: false
         };
       }
 
@@ -81,12 +82,19 @@ export function PoleVaultLeaderboard() {
         highestHeight,
         totalAttempts: attempts.length,
         attemptSequence,
-        status: highestHeight === 0 ? 'Failed all attempts' : ''
+        status: attempts.length > 0 && highestHeight === 0 ? 'Keine gültigen Versuche' : '',
+        hasAttempted: true
       };
     }).sort((a, b) => {
+      // First sort by whether they have attempted
+      if (a.hasAttempted !== b.hasAttempted) {
+        return b.hasAttempted ? 1 : -1;
+      }
+      // Then by height
       if (b.highestHeight !== a.highestHeight) {
         return b.highestHeight - a.highestHeight;
       }
+      // Then by attempts
       return a.totalAttempts - b.totalAttempts;
     });
   }
@@ -166,9 +174,7 @@ export function PoleVaultLeaderboard() {
                 </span>
               </div>
             </TableHead>
-            <TableHead className="py-6 text-2xl font-bold text-gray-800 w-96">Performance Trend</TableHead>
-            <TableHead className="py-6 text-2xl font-bold text-gray-800 w-48">Success Rate</TableHead>
-            <TableHead className="py-6 text-2xl font-bold text-gray-800 w-48">Personal Best</TableHead>
+            <TableHead className="py-6 text-2xl font-bold text-gray-800 w-48">Erfolgsquote  </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -208,16 +214,28 @@ export function PoleVaultLeaderboard() {
                       {competitor.highestHeight.toFixed(2)}
                       <span className="text-2xl ml-1">m</span>
                     </div>
+                  ) : competitor.hasAttempted ? (
+                    <div className="text-2xl font-bold text-red-600 italic">
+                      Keine gültigen Versuche
+                    </div>
                   ) : (
-                    <div className={`text-2xl font-bold ${competitor.status === 'Failed all attempts' ? 'text-red-600' : 'text-gray-500'} italic`}>
-                      {competitor.status}
+                    <div className="text-2xl font-bold text-gray-500 italic">
+                      Noch keine Versuche
                     </div>
                   )}
                 </TableCell>
                 <TableCell className="py-8">
                   <div className="flex gap-3 items-center min-h-[4rem]">
-                    {competitor.attemptSequence ? (
-                      competitor.totalAttempts > 0 ? (
+                    {competitor.hasAttempted ? (
+                      competitor.highestHeight === 0 ? (
+                        <span className={`
+                          inline-flex items-center justify-center h-16 px-8 rounded-full 
+                          text-2xl font-bold transition-all duration-200
+                          ${attemptStyles.failedAll}
+                        `}>
+                          Keine gültigen Versuche
+                        </span>
+                      ) : (
                         competitor.attemptSequence.split(' ').map((attempt, i) => (
                           <div key={i} className="flex flex-col items-center">
                             <span 
@@ -232,41 +250,13 @@ export function PoleVaultLeaderboard() {
                             <span className="text-sm text-gray-500 mt-1">#{i + 1}</span>
                           </div>
                         ))
-                      ) : (
-                        <span className={`inline-flex items-center justify-center h-16 px-8 rounded-full text-2xl font-bold transition-all duration-200 ${attemptStyles.noAttempts}`}>
-                          Keine Versuche
-                        </span>
                       )
                     ) : (
-                      <span className={`inline-flex items-center justify-center h-16 px-8 rounded-full text-2xl font-bold transition-all duration-200 ${attemptStyles.failedAll}`}>
-                        Keinen gültigen Versuch
+                      <span className={`inline-flex items-center justify-center h-16 px-8 rounded-full text-2xl font-bold transition-all duration-200 ${attemptStyles.noAttempts}`}>
+                        Keine Versuche
                       </span>
                     )}
                   </div>
-                </TableCell>
-                <TableCell className="py-8">
-                  {performanceSummary ? (
-                    <div className="flex items-center gap-2">
-                      {performanceSummary.map((perf, i) => (
-                        <div key={i} className="flex flex-col items-center">
-                          <div className={`
-                            px-3 py-1 rounded-md text-sm font-medium
-                            ${perf.success ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}
-                          `}>
-                            {perf.height.toFixed(2)}m
-                          </div>
-                          <div className="text-xs text-gray-500 mt-1">
-                            {perf.attempts} {perf.attempts === 1 ? 'try' : 'tries'}
-                          </div>
-                          {i < performanceSummary.length - 1 && (
-                            <div className="text-gray-400 text-lg mx-1">→</div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-gray-500 italic">Noch keine Versuche</div>
-                  )}
                 </TableCell>
                 <TableCell className="py-8">
                   {successRate ? (
@@ -296,15 +286,6 @@ export function PoleVaultLeaderboard() {
                     </div>
                   ) : (
                     <div className="text-gray-500 italic">Noch keine Versuche</div>
-                  )}
-                </TableCell>
-                <TableCell className="py-8">
-                  {personalBest ? (
-                    <div className="text-3xl font-bold text-blue-600">
-                      {personalBest}m
-                    </div>
-                  ) : (
-                    <div className="text-gray-500 italic">Keinen gültigen Versuch</div>
                   )}
                 </TableCell>
               </TableRow>

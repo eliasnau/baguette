@@ -81,7 +81,7 @@ export default function KugelPage() {
     return (
       <div className="flex gap-1 items-center">
         {attempts_jsx}
-        <span className="text-sm text-gray-500">({attempts.length}/3)</span>
+        <span className="text-sm text-gray-500">({attempts.length}/5)</span>
       </div>
     );
   }
@@ -93,7 +93,7 @@ export default function KugelPage() {
 
   function canAttempt(attempts: KugelAttempt[] | null): boolean {
     if (!attempts) return true;
-    return attempts.length < 3;
+    return attempts.length < 5;
   }
 
   function openLeaderboard() {

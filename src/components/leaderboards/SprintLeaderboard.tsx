@@ -50,47 +50,71 @@ export function SprintLeaderboard() {
   const rankings = getSprintRanking();
 
   return (
-    <div className="p-12 max-w-7xl mx-auto bg-gray-50 min-h-screen">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-800">Sprint Ergebnisse 🏃</h1>
-        <p className="text-gray-600 mt-2">Ergebnisse anhand der schnellsten Zeit (Stab)</p>
-      </div>
-
-      <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-        <Table>
-          <TableHeader>
-            <TableRow className="bg-gray-50">
-              <TableHead className="py-6 text-2xl font-bold">Rang</TableHead>
-              <TableHead className="py-6 text-2xl font-bold">Sportler</TableHead>
-              <TableHead className="py-6 text-2xl font-bold">Zeit</TableHead>
+    <div className="bg-white rounded-xl shadow-lg overflow-hidden w-[1800px]">
+      <Table>
+        <TableHeader>
+          <TableRow className="bg-gray-100 border-b-2 border-gray-200">
+            <TableHead className="py-6 text-2xl font-bold text-gray-800 pl-8 w-32">Rang</TableHead>
+            <TableHead className="py-6 text-2xl font-bold text-gray-800 w-48">Sportler</TableHead>
+            <TableHead className="py-6 text-2xl font-bold text-gray-800 w-48">Sprint Zeit</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {rankings.map((competitor, index) => (
+            <TableRow 
+              key={competitor.id} 
+              className={`
+                hover:bg-blue-50 transition-colors
+                ${index === 0 ? 'bg-yellow-50' : ''}
+                ${index === 1 ? 'bg-gray-50' : ''}
+                ${index === 2 ? 'bg-orange-50' : ''}
+              `}
+            >
+              <TableCell className="py-8 text-3xl font-bold pl-8">
+                <div className="flex items-center gap-3">
+                  {index === 0 && "🥇"}
+                  {index === 1 && "🥈"}
+                  {index === 2 && "🥉"}
+                  {index + 1}
+                </div>
+              </TableCell>
+              <TableCell className="py-8">
+                <div className="text-2xl font-semibold text-gray-800">{competitor.name}</div>
+              </TableCell>
+              <TableCell className="py-8">
+                <div className="text-3xl font-bold text-blue-600">
+                  {competitor.sprint_time?.toFixed(2)}
+                  <span className="text-2xl ml-1">s</span>
+                </div>
+              </TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {rankings.map((competitor, index) => (
-              <TableRow key={competitor.id} className="hover:bg-gray-50">
-                <TableCell className="py-8">
-                  <div className="text-4xl font-bold text-gray-800">#{index + 1}</div>
+          ))}
+          {competitors
+            .filter(c => c.sprint_time === null)
+            .map((competitor) => (
+              <TableRow key={competitor.id} className="hover:bg-blue-50 transition-colors">
+                <TableCell className="py-8 text-3xl font-bold pl-8">
+                  <div className="text-gray-400">-</div>
                 </TableCell>
                 <TableCell className="py-8">
-                  <div className="text-3xl font-bold text-gray-700">{competitor.name}</div>
+                  <div className="text-2xl font-semibold text-gray-800">{competitor.name}</div>
                 </TableCell>
                 <TableCell className="py-8">
-                  <div className="text-3xl font-bold text-blue-600">
-                    {competitor.sprint_time?.toFixed(2)}s
+                  <div className="text-2xl font-bold text-gray-500 italic">
+                    Noch kein Versuch
                   </div>
                 </TableCell>
               </TableRow>
             ))}
-            {rankings.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={3} className="text-center py-8 text-gray-500 text-2xl">
-                  Noch keinen Sprint Versuch 
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+          {rankings.length === 0 && competitors.length === 0 && (
+            <TableRow>
+              <TableCell colSpan={3} className="text-center py-8 text-gray-500 italic text-2xl">
+                Noch keine Sprint Versuche
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
     </div>
   );
-} 
+}

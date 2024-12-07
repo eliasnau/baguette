@@ -145,13 +145,7 @@ export function PoleVaultDisplay() {
             )}
           </div>
 
-          <div className="grid grid-cols-3 gap-8 mb-8">
-            <div className="bg-white/10 rounded-xl p-6 text-center">
-              <div className="text-4xl font-bold text-blue-400 mb-2">
-                {stats.bestHeight.toFixed(2)}m
-              </div>
-              <div className="text-xl text-gray-300">Personal Best</div>
-            </div>
+          <div className="grid grid-cols-2 gap-8 mb-8">
             <div className="bg-white/10 rounded-xl p-6 text-center">
               <div className="text-4xl font-bold text-green-400 mb-2">
                 {stats.successRate}%
