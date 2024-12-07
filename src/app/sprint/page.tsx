@@ -24,6 +24,7 @@ export default function SprintPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [startTime, setStartTime] = useState<number | null>(null);
   const [currentTime, setCurrentTime] = useState<number>(0);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     loadCompetitors();
@@ -71,13 +72,13 @@ export default function SprintPage() {
       });
       
       // Wait before hiding
-      setTimeout(async () => {
-        await emit('hide-sprint');
-        setCurrentSprinter(null);
-        setCurrentTime(0);
-        setIsRunning(false);
-        setRefreshKey(prev => prev + 1);
-      }, 2000); // Show result for 2 seconds
+      await emit('hide-sprint');
+      setCurrentSprinter(null);
+      setCurrentTime(0);
+      setIsRunning(false);
+      //setRefreshKey(prev => prev + 1);
+
+      setIsLoading(false);
       
     } catch (error) {
       console.error('Failed to save time:', error);
@@ -100,6 +101,18 @@ export default function SprintPage() {
     setCurrentTime(Number(elapsedTime.toFixed(2)));
     setIsRunning(false);
     setStartTime(null);
+  }
+
+  function handleTimeChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value;
+    if (value === '') {
+      setCurrentTime(0);
+      return;
+    }
+    const newTime = Number(value);
+    if (!isNaN(newTime) && newTime >= 0) {
+      setCurrentTime(Number(newTime.toFixed(2)));
+    }
   }
 
   return (
@@ -135,7 +148,7 @@ export default function SprintPage() {
             <h2 className="text-xl font-semibold text-gray-800">Aktueller Sprinter</h2>
             <Button
               onClick={handleSave}
-              disabled={isRunning || currentTime === 0}
+              disabled={isRunning || currentTime === 0 || isLoading}
               className="bg-blue-600 hover:bg-blue-700"
             >
               Ergebnisse speichern
@@ -150,7 +163,21 @@ export default function SprintPage() {
               {isRunning && startTime ? (
                 ((Date.now() - startTime) / 1000).toFixed(2)
               ) : (
-                currentTime.toFixed(2)
+                isEditing ? (
+                  <Input
+                    type="number"
+                    value={currentTime}
+                    onChange={handleTimeChange}
+                    step="0.01"
+                    min="0"
+                    className="w-32 text-2xl font-bold"
+                    autoFocus
+                  />
+                ) : (
+                  <span onClick={() => !isRunning && setIsEditing(true)} className="cursor-pointer">
+                    {currentTime.toFixed(2)}
+                  </span>
+                )
               )}
               <span className="text-xl ml-1">s</span>
             </div>
