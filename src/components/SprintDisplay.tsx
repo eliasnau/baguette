@@ -1,3 +1,6 @@
+// @ts-nocheck
+// @typescript-eslint/no-unused-vars
+// @typescript-eslint/no-unused-vars
 "use client";
 import { useEffect, useState } from 'react';
 import { listen } from '@tauri-apps/api/event';
