@@ -52,17 +52,17 @@ export function SprintLeaderboard() {
   return (
     <div className="p-12 max-w-7xl mx-auto bg-gray-50 min-h-screen">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-800">Sprint Leaderboard 🏃</h1>
-        <p className="text-gray-600 mt-2">Rankings based on fastest sprint times (Stab)</p>
+        <h1 className="text-4xl font-bold text-gray-800">Sprint Ergebnisse 🏃</h1>
+        <p className="text-gray-600 mt-2">Ergebnisse anhand der schnellsten Zeit (Stab)</p>
       </div>
 
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow className="bg-gray-50">
-              <TableHead className="py-6 text-2xl font-bold">Rank</TableHead>
-              <TableHead className="py-6 text-2xl font-bold">Athlete</TableHead>
-              <TableHead className="py-6 text-2xl font-bold">Time</TableHead>
+              <TableHead className="py-6 text-2xl font-bold">Rang</TableHead>
+              <TableHead className="py-6 text-2xl font-bold">Sportler</TableHead>
+              <TableHead className="py-6 text-2xl font-bold">Zeit</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -84,7 +84,7 @@ export function SprintLeaderboard() {
             {rankings.length === 0 && (
               <TableRow>
                 <TableCell colSpan={3} className="text-center py-8 text-gray-500 text-2xl">
-                  No sprint times recorded yet
+                  Noch keinen Sprint Versuch 
                 </TableCell>
               </TableRow>
             )}

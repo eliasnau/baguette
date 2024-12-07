@@ -66,7 +66,7 @@ export default function JumpPage() {
 
   function getAttemptSequence(attempts: JumpAttempt[] | null): JSX.Element {
     if (!attempts || attempts.length === 0) {
-      return <span className="text-gray-500 text-xl">No attempts yet</span>;
+      return <span className="text-gray-500 text-xl">Noch keine Versuche</span>;
     }
 
     return (
@@ -128,7 +128,7 @@ export default function JumpPage() {
             onClick={openLeaderboard}
             className="ml-4 bg-blue-50 hover:bg-blue-100 text-blue-600"
           >
-            View Leaderboard 🏆
+            Bestenliste🏆
           </Button>
         </div>
       </div>
@@ -208,7 +208,7 @@ export default function JumpPage() {
                         onClick={() => setCurrentJumper(competitor)}
                         className="hover:bg-blue-50 transition-colors"
                       >
-                        Set as Current Jumper
+                        Springen lassen
                       </Button>
                     )}
                   </TableCell>
@@ -221,7 +221,7 @@ export default function JumpPage() {
 
       {isLoading && (
         <div className="mt-4 text-center text-gray-500">
-          Loading...
+          Lädt...
         </div>
       )}
     </div>

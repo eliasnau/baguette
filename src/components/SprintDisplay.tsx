@@ -165,7 +165,7 @@ export function SprintDisplay() {
               <div className="text-4xl font-bold text-blue-400 mb-2">
                 {bestTime ? `${bestTime.toFixed(2)}s` : '-'}
               </div>
-              <div className="text-xl text-gray-300">Previous Best</div>
+              <div className="text-xl text-gray-300">Vorherigen bester Versuch</div>
             </div>
             {currentTime && bestTime && (
               <div className="bg-white/10 rounded-xl p-6 text-center">
@@ -174,7 +174,7 @@ export function SprintDisplay() {
                 }`}>
                   {(currentTime - bestTime).toFixed(2)}s
                 </div>
-                <div className="text-xl text-gray-300">vs Previous</div>
+                <div className="text-xl text-gray-300">vs Vorheriger</div>
               </div>
             )}
           </div>

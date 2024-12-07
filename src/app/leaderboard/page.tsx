@@ -24,8 +24,8 @@ export default function LeaderboardPage() {
         <div className="py-8">
           <div className="flex items-center justify-between mb-8 bg-white p-6 rounded-xl shadow-sm">
             <div>
-              <h1 className="text-4xl font-bold text-gray-800">Competition Leaderboards</h1>
-              <p className="text-gray-600 mt-2">View rankings and results for each discipline</p>
+              <h1 className="text-4xl font-bold text-gray-800">Bestenlisten</h1>
+              <p className="text-gray-600 mt-2">Bestenliste für alle Disziplinen anzeigen</p>
             </div>
             <Select
               value={selectedLeaderboard}
@@ -37,7 +37,7 @@ export default function LeaderboardPage() {
               <SelectContent>
                 <SelectItem value="pole" className="text-lg py-3 cursor-pointer">
                   <div className="flex items-center gap-2">
-                    🏃‍♂️ Pole Vault
+                    🏃‍♂️ Stabhochsprung
                   </div>
                 </SelectItem>
                 <SelectItem value="sprint" className="text-lg py-3 cursor-pointer">
@@ -47,7 +47,7 @@ export default function LeaderboardPage() {
                 </SelectItem>
                 <SelectItem value="climbing" className="text-lg py-3 cursor-pointer">
                   <div className="flex items-center gap-2">
-                    🧗 Climbing
+                    🧗 Seilklettern
                   </div>
                 </SelectItem>
                 <SelectItem value="kugel" className="text-lg py-3 cursor-pointer">
@@ -62,17 +62,17 @@ export default function LeaderboardPage() {
                 </SelectItem>
                 <SelectItem value="fivejump" className="text-lg py-3 cursor-pointer">
                   <div className="flex items-center gap-2">
-                    🦘 5-Jump
+                    🦘 Froschsprung
                   </div>
                 </SelectItem>
                 <SelectItem value="allwurf" className="text-lg py-3 cursor-pointer">
                   <div className="flex items-center gap-2">
-                    🏆 All Wurf Rankings
+                    🏆 Kugel Dreikampf Bestenliste
                   </div>
                 </SelectItem>
                 <SelectItem value="allstab" className="text-lg py-3 cursor-pointer">
                   <div className="flex items-center gap-2">
-                    🏆 All Stab Rankings
+                    🏆 Stabhoch Dreikampf Bestenliste
                   </div>
                 </SelectItem>
               </SelectContent>

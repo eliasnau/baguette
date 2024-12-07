@@ -106,7 +106,7 @@ export default function SprintPage() {
     <div className="p-8 max-w-7xl mx-auto bg-gray-50 min-h-screen">
       <div className="flex justify-between items-center mb-8 bg-white p-6 rounded-lg shadow-sm">
         <div className="flex items-center gap-4">
-          <h1 className="text-3xl font-bold text-gray-800">Sprint Competition</h1>
+          <h1 className="text-3xl font-bold text-gray-800">Sprint Wettkampf</h1>
         </div>
         <div className="flex items-center gap-4">
           <Button
@@ -115,7 +115,7 @@ export default function SprintPage() {
             disabled={!currentSprinter || isRunning}
             className="bg-green-600 hover:bg-green-700"
           >
-            Start Timer
+             Timer starten
           </Button>
           <Button
             variant="default"
@@ -123,7 +123,7 @@ export default function SprintPage() {
             disabled={!isRunning}
             className="bg-red-600 hover:bg-red-700"
           >
-            Stop Timer
+             Timer stoppen
           </Button>
         </div>
       </div>
@@ -132,13 +132,13 @@ export default function SprintPage() {
       {currentSprinter && (
         <div className="mb-8 bg-white p-6 rounded-lg shadow-sm">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-gray-800">Current Sprinter</h2>
+            <h2 className="text-xl font-semibold text-gray-800">Aktueller Sprinter</h2>
             <Button
               onClick={handleSave}
               disabled={isRunning || currentTime === 0}
               className="bg-blue-600 hover:bg-blue-700"
             >
-              Save Result
+              Ergebnisse speichern
             </Button>
           </div>
           <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border-2 border-gray-200">
@@ -175,15 +175,15 @@ export default function SprintPage() {
                 <TableCell>
                   {currentSprinter?.id === competitor.id ? (
                     <span className="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800">
-                      Currently Running
+                      Läuft aktuell:
                     </span>
                   ) : competitor.sprint_time !== null && competitor.sprint_time !== undefined && competitor.sprint_time > 0 ? (
                     <span className="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-gray-800">
-                      Completed ({competitor.sprint_time}s)
+                      Fertig ({competitor.sprint_time}s)
                     </span>
                   ) : (
                     <span className="inline-flex items-center px-3 py-1 rounded-full bg-yellow-100 text-yellow-800">
-                      Not Started
+                      Noch nicht gestartet
                     </span>
                   )}
                 </TableCell>
@@ -194,7 +194,7 @@ export default function SprintPage() {
                       onClick={() => setCurrentSprinter(competitor)}
                       className="hover:bg-blue-50 transition-colors"
                     >
-                      Set as Current Sprinter
+                      Sprinten lassen
                     </Button>
                   )}
                 </TableCell>
@@ -206,7 +206,7 @@ export default function SprintPage() {
 
       {isLoading && (
         <div className="mt-4 text-center text-gray-500">
-          Loading...
+          Lädt...
         </div>
       )}
     </div>

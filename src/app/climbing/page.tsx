@@ -62,10 +62,10 @@ export default function ClimbingPage() {
       setActiveClimbers([]);
       setSelectedClimbers([]);
       setIsRunning(false);
-      toast.success('All times saved successfully');
+      toast.success('Alles erfolgreich abgespeichert');
     } catch (error) {
       console.error('Failed to save times:', error);
-      toast.error('Failed to save times');
+      toast.error('Fehler beim Speichern der Zeiten');
     } finally {
       setIsLoading(false);
     }
@@ -221,13 +221,13 @@ export default function ClimbingPage() {
     <div className="p-8 max-w-7xl mx-auto bg-gray-50 min-h-screen">
       <div className="flex justify-between items-center mb-8 bg-white p-6 rounded-lg shadow-sm">no 
         <div className="flex items-center gap-4">
-          <h1 className="text-3xl font-bold text-gray-800">Climbing Competition 🧗</h1>
+          <h1 className="text-3xl font-bold text-gray-800">Seilklettern</h1>
           <Button
             variant="outline"
             onClick={openLeaderboard}
             className="ml-4 bg-blue-50 hover:bg-blue-100 text-blue-600"
           >
-            View Leaderboard 🏆
+            Bestenliste anschauen🏆
           </Button>
         </div>
         <div className="flex items-center gap-4">
@@ -237,7 +237,7 @@ export default function ClimbingPage() {
             disabled={selectedClimbers.length === 0 || isRunning}
             className="bg-green-600 hover:bg-green-700"
           >
-            Start Timer
+            Timer starten
           </Button>
           <Button
             variant="default"
@@ -245,7 +245,7 @@ export default function ClimbingPage() {
             disabled={!isRunning}
             className="bg-red-600 hover:bg-red-700"
           >
-            Stop Timer
+             Timer starten
           </Button>
         </div>
       </div>
@@ -254,13 +254,13 @@ export default function ClimbingPage() {
       {activeClimbers.length > 0 && (
         <div className="mb-8 bg-white p-6 rounded-lg shadow-sm">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-gray-800">Active Climbers</h2>
+            <h2 className="text-xl font-semibold text-gray-800">Aktuelle Kletterer</h2>
             <Button
               onClick={handleSaveAll}
               disabled={!activeClimbers.length || isRunning}
               className="bg-blue-600 hover:bg-blue-700"
             >
-              Save All Results
+              Alle Ergebnisse speichern
             </Button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -307,7 +307,7 @@ export default function ClimbingPage() {
             <TableRow className="bg-gray-50">
               <TableHead className="font-semibold text-gray-700">Name</TableHead>
               <TableHead className="font-semibold text-gray-700">Status</TableHead>
-              <TableHead className="font-semibold text-gray-700">Action</TableHead>
+              <TableHead className="font-semibold text-gray-700">Aktion</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -320,19 +320,19 @@ export default function ClimbingPage() {
                   <TableCell>
                     {isSelected && isRunning ? (
                       <span className="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800">
-                        Currently Climbing
+                        Aktuelle Kletterer
                       </span>
                     ) : isSelected ? (
                       <span className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-800">
-                        Selected
+                        Ausgewählt
                       </span>
                     ) : competitor.climbing_time !== null ? (
                       <span className="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-gray-800">
-                        Completed
+                        Fertig
                       </span>
                     ) : (
                       <span className="inline-flex items-center px-3 py-1 rounded-full bg-yellow-100 text-yellow-800">
-                        Not Started
+                        Nicht gestartet
                       </span>
                     )}
                   </TableCell>
@@ -358,7 +358,7 @@ export default function ClimbingPage() {
 
       {isLoading && (
         <div className="mt-4 text-center text-gray-500">
-          Loading...
+          Lädt...
         </div>
       )}
     

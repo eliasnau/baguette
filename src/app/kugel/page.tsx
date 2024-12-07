@@ -70,7 +70,7 @@ export default function KugelPage() {
   }
 
   function getAttemptSequence(attempts: KugelAttempt[] | null): JSX.Element {
-    if (!attempts) return <span className={attemptStyles.pending}>No attempts</span>;
+    if (!attempts) return <span className={attemptStyles.pending}>Keine Versuche</span>;
     
     const attempts_jsx = attempts.map((a, index) => (
       <span key={index} className={attemptStyles.attempt}>
@@ -113,13 +113,13 @@ export default function KugelPage() {
     <div className="p-8 max-w-7xl mx-auto bg-gray-50 min-h-screen">
       <div className="flex justify-between items-center mb-8 bg-white p-6 rounded-lg shadow-sm">
         <div className="flex items-center gap-4">
-          <h1 className="text-3xl font-bold text-gray-800">Kugelstoßen Competition 🏋️</h1>
+          <h1 className="text-3xl font-bold text-gray-800">Kugelstoßen🏋️</h1>
           <Button
             variant="outline"
             onClick={openLeaderboard}
             className="ml-4 bg-blue-50 hover:bg-blue-100 text-blue-600"
           >
-            View Leaderboard 🏆
+            Bestenliste🏆
           </Button>
         </div>
       </div>
@@ -153,14 +153,14 @@ export default function KugelPage() {
                 onClick={handleAttempt}
                 disabled={!currentDistance}
               >
-                Record Attempt
+                Rekordversuch
               </Button>
               <Button
                 variant="outline"
                 className="ml-2 hover:bg-red-50 text-red-600"
                 onClick={() => setCurrentThrower(null)}
               >
-                Cancel
+                Abbrechen
               </Button>
             </div>
           </div>
@@ -201,7 +201,7 @@ export default function KugelPage() {
                         onClick={() => setCurrentThrower(competitor)}
                         className="hover:bg-blue-50 transition-colors"
                       >
-                        Set as Current Thrower
+                        Werfen lassen
                       </Button>
                     )}
                   </TableCell>
@@ -214,7 +214,7 @@ export default function KugelPage() {
 
       {isLoading && (
         <div className="mt-4 text-center text-gray-500">
-          Loading...
+          Lädt...
         </div>
       )}
     </div>

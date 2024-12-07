@@ -78,7 +78,7 @@ export function AllStabLeaderboard() {
       return (
         <div className="flex flex-col items-start">
           <div className="text-3xl font-bold text-blue-600">-</div>
-          <div className="text-gray-400 text-lg mt-1">No attempts</div>
+          <div className="text-gray-400 text-lg mt-1">keine Versuche</div>
         </div>
       );
     }
@@ -106,23 +106,23 @@ export function AllStabLeaderboard() {
   }
 
   if (isLoading) {
-    return <div className="text-center p-4">Loading...</div>;
+    return <div className="text-center p-4">Lädt...</div>;
   }
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      <h2 className="text-4xl font-bold mb-8 text-center">Stab Group Rankings 🏆</h2>
+      <h2 className="text-4xl font-bold mb-8 text-center">Stab-Gruppen-Rangliste 🏆</h2>
       
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow className="bg-gray-50">
-              <TableHead className="py-6 text-2xl font-bold">Rank</TableHead>
-              <TableHead className="py-6 text-2xl font-bold">Athlete</TableHead>
-              <TableHead className="py-6 text-2xl font-bold">Pole Vault 🏃‍♂️</TableHead>
-              <TableHead className="py-6 text-2xl font-bold">Climbing 🧗</TableHead>
+              <TableHead className="py-6 text-2xl font-bold">Rang</TableHead>
+              <TableHead className="py-6 text-2xl font-bold">Sportler</TableHead>
+              <TableHead className="py-6 text-2xl font-bold">Stabhochsprung 🏃‍♂️</TableHead>
+              <TableHead className="py-6 text-2xl font-bold">Seilklettern 🧗</TableHead>
               <TableHead className="py-6 text-2xl font-bold">Sprint 🏃</TableHead>
-              <TableHead className="py-6 text-2xl font-bold">Total Score</TableHead>
+              <TableHead className="py-6 text-2xl font-bold">Ergebnisse</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -174,7 +174,7 @@ export function AllStabLeaderboard() {
             {competitors.length === 0 && (
               <TableRow>
                 <TableCell colSpan={6} className="text-center py-8 text-gray-500 text-2xl">
-                  No competitors found
+                  Keine Sportler gefunden
                 </TableCell>
               </TableRow>
             )}
