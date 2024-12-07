@@ -1,4 +1,3 @@
-
 // @ts-nocheck
 "use client";
 import { useState, useEffect } from 'react';
@@ -79,7 +78,7 @@ export function FiveJumpLeaderboard() {
             </div>
           </div>
         ))}
-        {Array.from({ length: 3 - (attempts?.length || 0) }).map((_, index) => (
+        {Array.from({ length: 2 - (attempts?.length || 0) }).map((_, index) => (
           <div
             key={`empty-${index}`}
             className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-100 text-gray-400 font-semibold text-2xl"

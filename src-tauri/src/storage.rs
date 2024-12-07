@@ -238,7 +238,7 @@ impl Storage {
             .iter_mut()
             .find(|c| c.id == competitor_id)
         {
-            competitor.wsprint_time = Some(time);
+            competitor.sprint_time = Some(time);
             Ok(())
         } else {
             Err("Competitor not found".to_string())
@@ -263,7 +263,7 @@ impl Storage {
             let attempt = KugelAttempt { distance };
             
             match &mut competitor.kugel_attempts {
-                Some(attempts) if attempts.len() >= 3 => {
+                Some(attempts) if attempts.len() >= 5 => {
                     Err("Maximum number of attempts reached".to_string())
                 }
                 Some(attempts) => {
@@ -298,8 +298,8 @@ impl Storage {
             let attempt = JumpAttempt { distance };
             
             match &mut competitor.sprint_5jump {
-                Some(attempts) if attempts.len() >= 3 => {
-                    Err("Maximum number of attempts (3) reached".to_string())
+                Some(attempts) if attempts.len() >= 2 => {
+                    Err("Maximum number of attempts (2) reached".to_string())
                 }
                 Some(attempts) => {
                     attempts.push(attempt);
